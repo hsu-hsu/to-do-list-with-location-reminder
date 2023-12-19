@@ -44,6 +44,8 @@ class RemindersListViewModel(
                 }
                 is Result.Error ->
                     showSnackBar.value = result.message
+
+                else -> {}
             }
 
             //check if no data has to be shown
