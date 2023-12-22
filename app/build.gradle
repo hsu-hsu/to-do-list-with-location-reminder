@@ -34,6 +34,16 @@ android {
         returnDefaultValues = true
     }
 
+    packagingOptions {
+        // for JNA and JNA-platform
+        exclude "META-INF/AL2.0"
+        exclude "META-INF/LGPL2.1"
+        // for byte-buddy
+        exclude "META-INF/licenses/ASM"
+        exclude "META-INF/LICENSE.md"
+        exclude "META-INF/LICENSE-notice.md"
+    }
+
 //    dataBinding {
 //        enabled = true
 //        enabledForTests = true
