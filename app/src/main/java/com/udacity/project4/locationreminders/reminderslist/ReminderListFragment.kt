@@ -1,8 +1,13 @@
 package com.udacity.project4.locationreminders.reminderslist
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.*
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
 import com.firebase.ui.auth.AuthUI
@@ -55,10 +60,42 @@ class ReminderListFragment : BaseFragment() {
     }
 
     private fun navigateToAddReminder() {
-        // Use the navigationCommand live data to navigate between the fragments
-        _viewModel.navigationCommand.postValue(
-            NavigationCommand.To(ReminderListFragmentDirections.toSaveReminder())
-        )
+        if (Build.VERSION.SDK_INT >= 33) {
+            if (ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                requestPermissions(
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    101
+                )
+            } else {
+                // Use the navigationCommand live data to navigate between the fragments
+                _viewModel.navigationCommand.postValue(
+                    NavigationCommand.To(ReminderListFragmentDirections.toSaveReminder())
+                )
+            }
+        } else {
+                // Use the navigationCommand live data to navigate between the fragments
+                _viewModel.navigationCommand.postValue(
+                    NavigationCommand.To(ReminderListFragmentDirections.toSaveReminder())
+                )
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if(grantResults.isNotEmpty()) {
+            _viewModel.navigationCommand.postValue(
+                NavigationCommand.To(ReminderListFragmentDirections.toSaveReminder())
+            )
+        }
+
     }
 
     private fun setupRecyclerView() {
