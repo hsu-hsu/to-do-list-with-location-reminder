@@ -17,14 +17,13 @@ class FakeDataSource(private val remindersList: MutableList<ReminderDTO> = mutab
     }
 
     override suspend fun getReminders(): Result<List<ReminderDTO>> {
-        if (shouldReturnError) {
-            return Result.Error(
+        return if (shouldReturnError) {
+            Result.Error(
                 "Error getting reminders"
             )
         }else{
             Result.Success(remindersList)
         }
-        return Result.Error("Reminders not found")
     }
 
     override suspend fun saveReminder(reminder: ReminderDTO) {
